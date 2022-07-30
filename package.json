@@ -13,6 +13,7 @@
     "prettier": "^2.7.1"
   },
   "dependencies": {
+    "@turf/helpers": "^6.5.0",
     "bootstrap": "5.2.0",
     "maplibre-gl": "2.1.9"
   }
