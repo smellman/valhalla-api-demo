@@ -9,5 +9,8 @@
   },
   "devDependencies": {
     "parcel": "^2.6.2"
+  },
+  "dependencies": {
+    "bootstrap": "5.2.0"
   }
 }
