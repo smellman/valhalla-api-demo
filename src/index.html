@@ -1,19 +1,50 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8"/>
+    <meta charset="utf-8" />
     <title>Routing Demo</title>
-    <link rel="stylesheet" href="ui/bootstrap.scss">
-    <link rel="stylesheet" href="ui/map.scss">
+    <link rel="stylesheet" href="ui/bootstrap.scss" />
+    <link rel="stylesheet" href="ui/map.scss" />
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container-fluid">
         <a class="navbar-brand" href="#">Routing demo</a>
+        <ul class="nav justify-content-center">
+          <li class="nav-item">
+            <a class="nav-link" href="#" id="routingApiLink"">Route API</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" id="isochroneApiLink">Isochrone API</a>
+          </li>
+        </ul>
       </div>
     </nav>
     <div class="container-fluid" id="main-content">
-      <div id="map"></div>
+      <div class="row"><div id="map"></div></div>
+    </div>
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="apiCanvas">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="apiCanvasTitle">Route API</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="offcanvas"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="offcanvas-body">
+        <div id="routeApiCanvasBody">
+          <p>
+            ルート検索をする2点を指定してください。オプションは下のパラメータで設定できます。
+          </p>
+        </div>
+        <div id="isochroneApiCanvasBody" style="display: none">
+          <p>
+            検索する箇所を1点指定をしてください。オプションは下のパラメータで設定できます。
+          </p>
+        </div>
+      </div>
     </div>
     <script type="module" src="ui/bootstrap.ts"></script>
     <script type="module" src="js/map.ts"></script>
