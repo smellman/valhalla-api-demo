@@ -111,6 +111,23 @@ let geojsonFeature = {
   },
 }
 
+let isochroneFirstFeature = {
+  type: 'Feature',
+  properties: {},
+  geometry: {
+    type: 'Polygon',
+    coordinates: [
+      [
+        [0, 0],
+        [0, 1],
+        [1, 1],
+        [1, 0],
+        [0, 0],
+      ],
+    ],
+  },
+}
+
 map.on('load', () => {
   map.addSource('route', {
     type: 'geojson',
@@ -127,6 +144,20 @@ map.on('load', () => {
     paint: {
       'line-color': '#ff0000',
       'line-width': 5,
+    },
+  })
+  map.addSource('isochroneFirst', {
+    type: 'geojson',
+    data: isochroneFirstFeature,
+  })
+  map.addLayer({
+    id: 'isochroneFirst',
+    type: 'fill',
+    source: 'isochroneFirst',
+    layout: {},
+    paint: {
+      'fill-color': '#ff0000',
+      'fill-opacity': 0.33,
     },
   })
 })
@@ -148,6 +179,19 @@ const doRouting = async () => {
 }
 
 const doIsochrone = async () => {
-  const isochrone = new Isochrone('http://192.168.0.247:8002')
-  await isochrone.isochrone(isochroneMarker?.getLngLat(), 15, 'ff0000')
+  if (isochroneMarker) {
+    const isochrone = new Isochrone('http://192.168.0.247:8002')
+    const firstCoordinates = await isochrone.isochrone(
+      isochroneMarker.getLngLat(),
+      15,
+      'ff0000'
+    )
+    console.log(firstCoordinates)
+    isochroneFirstFeature.geometry.coordinates = [firstCoordinates]
+    console.log(isochroneFirstFeature)
+    const firstSource = map.getSource('isochroneFirst') as GeoJSONSource
+    if (firstSource) {
+      firstSource.setData(isochroneFirstFeature as GeoJSONFeature)
+    }
+  }
 }

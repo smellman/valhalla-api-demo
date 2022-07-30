@@ -1,5 +1,6 @@
 import { Valhalla, Costing } from './valhalla'
-import { LngLat } from 'maplibre-gl'
+import { GeoJSONFeature, LngLat } from 'maplibre-gl'
+import { Feature, FeatureCollection, LineString, Polygon } from 'geojson'
 
 const api_path = '/isochrone?json='
 
@@ -12,7 +13,7 @@ export class Isochrone extends Valhalla {
     time: number,
     color: string,
     costing: Costing = 'pedestrian'
-  ) {
+  ): Promise<number[][]> {
     const location = this.getLocation(pos)
     const query = {
       locations: [location],
@@ -24,5 +25,8 @@ export class Isochrone extends Valhalla {
     const response = await fetch(requestUrl)
     const json = await response.json()
     console.log(json)
+    const line = json.features[0]
+    console.log(line)
+    return line.geometry.coordinates
   }
 }
