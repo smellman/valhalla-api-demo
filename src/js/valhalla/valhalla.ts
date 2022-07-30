@@ -1,4 +1,4 @@
-import { LngLat } from "maplibre-gl"
+import { LngLat } from 'maplibre-gl'
 
 export type Location = {
   lng: number
@@ -11,10 +11,10 @@ export class Valhalla {
     this.end_point = end_point
   }
 
-  protected getLocation(position: LngLat): Location  {
+  protected getLocation(position: LngLat): Location {
     return {
       lng: position.lng,
-      lat: position.lat
+      lat: position.lat,
     }
   }
 }
