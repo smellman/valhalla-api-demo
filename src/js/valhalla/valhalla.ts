@@ -1,7 +1,7 @@
 import { LngLat } from 'maplibre-gl'
 
 export type Location = {
-  lng: number
+  lon: number
   lat: number
 }
 
@@ -13,7 +13,7 @@ export class Valhalla {
 
   protected getLocation(position: LngLat): Location {
     return {
-      lng: position.lng,
+      lon: position.lng,
       lat: position.lat,
     }
   }

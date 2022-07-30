@@ -1,5 +1,6 @@
 import { Valhalla } from './valhalla'
 import { LngLat } from 'maplibre-gl'
+import { decode } from './polyline'
 
 export const CostingArray = [
   'auto',
@@ -49,15 +50,41 @@ export const LanguageArray = [
 ] as const
 export type Language = typeof LanguageArray[number]
 
+const api_path = '/route?json='
+
 export class Routing extends Valhalla {
   /**
    * routing
    */
-  public routing(
+  public async routing(
+    id: string,
     start_position: LngLat,
     end_point: LngLat,
     costing: Costing = 'auto',
     language: Language = 'ja-JP',
     units: Units = 'kilometers'
-  ) {}
+  ) {
+    console.log('routing')
+    const start = this.getLocation(start_position)
+    const end = this.getLocation(end_point)
+    const query = {
+      locations: [start, end],
+      costing: costing,
+      costing_options: {
+        auto: {
+          country_crossing_penalty: 2000,
+        },
+      },
+      language: language,
+      units: units,
+      id: id,
+    }
+    const queryString = JSON.stringify(query)
+    const requestUrl = this.end_point + api_path + queryString
+    console.log(requestUrl)
+    const response = await fetch(requestUrl)
+    const json = await response.json()
+    console.log(json.trip.legs[0].shape)
+    console.log(decode(json.trip.legs[0].shape, 6))
+  }
 }
