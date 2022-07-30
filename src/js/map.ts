@@ -60,7 +60,7 @@ const doRouting = async () => {
     const end = markers[1]
     const routing = new Routing('http://192.168.0.247:8002')
     const line = await routing.routing(start.getLngLat(), end.getLngLat())
-    geojsonFeature.geometry.coordinates = line.geometry.coordinates
+    geojsonFeature.geometry.coordinates = line
   } else {
     geojsonFeature.geometry.coordinates = []
   }

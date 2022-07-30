@@ -1,7 +1,6 @@
 import { Valhalla, Costing } from './valhalla'
 import { LngLat } from 'maplibre-gl'
 import { decode } from './polyline'
-import { lineString } from '@turf/helpers'
 
 export const UnitsArray = ['kilometers', 'miles']
 export type Units = typeof UnitsArray[number]
@@ -72,6 +71,6 @@ export class Routing extends Valhalla {
     const decoded = decode(json.trip.legs[0].shape, 6)
     const result: number[][] = []
     decoded.forEach((v) => result.push([v[1], v[0]]))
-    return lineString(result)
+    return result
   }
 }
