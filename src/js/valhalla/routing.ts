@@ -1,21 +1,8 @@
-import { Valhalla } from './valhalla'
+import { Valhalla, Costing } from './valhalla'
 import { LngLat } from 'maplibre-gl'
 import { decode } from './polyline'
 import { lineString } from '@turf/helpers'
 
-export const CostingArray = [
-  'auto',
-  'bicycle',
-  'bus',
-  'bikeshare',
-  'truck',
-  'taxi',
-  'moter_scooter',
-  'motorcycle',
-  'multimodal',
-  'pedestrian',
-] as const
-export type Costing = typeof CostingArray[number]
 export const UnitsArray = ['kilometers', 'miles']
 export type Units = typeof UnitsArray[number]
 export const LanguageArray = [
