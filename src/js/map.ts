@@ -84,6 +84,8 @@ const setupRoutingMode = () => {
   apiCanvasTitle.innerText = 'Route API'
   routingDiv.style.display = ''
   isochroneDiv.style.display = 'none'
+  routingLink.classList.add('active')
+  isochroneLink.classList.remove('active')
 }
 
 const setupIsochroneMode = () => {
@@ -91,6 +93,8 @@ const setupIsochroneMode = () => {
   apiCanvasTitle.innerText = 'Isochrone API'
   routingDiv.style.display = 'none'
   isochroneDiv.style.display = ''
+  routingLink.classList.remove('active')
+  isochroneLink.classList.add('active')
 }
 
 const map = new Map({
