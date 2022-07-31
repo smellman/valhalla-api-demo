@@ -50,6 +50,10 @@ const cleanMarkers = () => {
     const m = markers.shift()
     m?.remove()
   }
+  if (isochroneMarker) {
+    isochroneMarker.remove()
+    isochroneMarker = null
+  }
 }
 
 const cleanLine = () => {
