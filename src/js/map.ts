@@ -69,12 +69,28 @@ const cleanAll = () => {
   cleanLine()
 }
 
+const apiCanvasTitle = document.getElementById(
+  'apiCanvasTitle'
+) as HTMLHeadingElement
+const routingDiv = document.getElementById(
+  'routeApiCanvasBody'
+) as HTMLDivElement
+const isochroneDiv = document.getElementById(
+  'isochroneApiCanvasBody'
+) as HTMLDivElement
+
 const setupRoutingMode = () => {
   cleanAll()
+  apiCanvasTitle.innerText = 'Route API'
+  routingDiv.style.display = ''
+  isochroneDiv.style.display = 'none'
 }
 
 const setupIsochroneMode = () => {
   cleanAll()
+  apiCanvasTitle.innerText = 'Isochrone API'
+  routingDiv.style.display = 'none'
+  isochroneDiv.style.display = ''
 }
 
 const map = new Map({
