@@ -5,6 +5,8 @@ import { Routing } from './valhalla/routing'
 import { Isochrone } from './valhalla/isochrone'
 import * as bootstrap from 'bootstrap'
 
+const host = location.host.split(':')[0]
+
 type APIMode = 'Routing' | 'Isochrone'
 
 let apiMode: APIMode = 'Routing'
@@ -64,9 +66,18 @@ const cleanLine = () => {
   }
 }
 
+const cleanPolygons = () => {
+  isochroneFirstFeature.geometry.coordinates = []
+  const firstSource = map.getSource('isochroneFirst') as GeoJSONSource
+  if (firstSource) {
+    firstSource.setData(isochroneFirstFeature as GeoJSONFeature)
+  }
+}
+
 const cleanAll = () => {
   cleanMarkers()
   cleanLine()
+  cleanPolygons()
 }
 
 const apiCanvasTitle = document.getElementById(
@@ -99,7 +110,7 @@ const setupIsochroneMode = () => {
 
 const map = new Map({
   container: 'map',
-  style: 'https://tile.openstreetmap.jp/styles/maptiler-toner-ja/style.json',
+  style: `http://${host}:8000/styles/maptiler-toner-ja/style.json`,
   center: [139.7531, 35.68302],
   zoom: 9,
 })
@@ -190,7 +201,7 @@ const doRouting = async () => {
   if (markers.length == 2) {
     const start = markers[0]
     const end = markers[1]
-    const routing = new Routing('http://192.168.0.247:8002')
+    const routing = new Routing(`http://${host}:8002`)
     const line = await routing.routing(start.getLngLat(), end.getLngLat())
     geojsonFeature.geometry.coordinates = line
   } else {
@@ -204,7 +215,7 @@ const doRouting = async () => {
 
 const doIsochrone = async () => {
   if (isochroneMarker) {
-    const isochrone = new Isochrone('http://192.168.0.247:8002')
+    const isochrone = new Isochrone(`http://${host}:8002`)
     const firstCoordinates = await isochrone.isochrone(
       isochroneMarker.getLngLat(),
       15,
