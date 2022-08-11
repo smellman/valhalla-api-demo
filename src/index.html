@@ -54,9 +54,6 @@
           </div>
           <div class="row g-3 align-items-center">
             <div class="col-auto">
-              <label for="isochroneFirstMin" class="form-label">一つ目の距離</label>
-            </div>
-            <div class="col-auto">
               <input type="time" class="form-control" id="isochroneFirstMin" value="00:15" min="00:01" max="01:00"> 
             </div>
             <div class="col-auto">
@@ -64,11 +61,24 @@
             </div>
             <div class="col-auto">
               <span class="form-text">
-                一つ目の等時線の時間を入力してください。
+                一つ目の等時線の時間と色を入力してください。
               </span>
             </div>
           </div>
-      </div>
+          <div class="row g-3 align-items-center">
+            <div class="col-auto">
+              <input type="time" class="form-control" id="isochroneSecondMin" value="00:30" min="00:01" max="01:15"> 
+            </div>
+            <div class="col-auto">
+              <input type="color" class="color-picker" id="isochroneSecondColor" value="#00ff00">
+            </div>
+            <div class="col-auto">
+              <span class="form-text">
+                二つ目の等時線の時間と色を入力してください。
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <script type="module" src="ui/bootstrap.ts"></script>

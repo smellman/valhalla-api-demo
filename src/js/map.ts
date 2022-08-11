@@ -201,6 +201,23 @@ let isochroneFirstFeature = {
   },
 }
 
+let isochroneSecondFeature = {
+  type: 'Feature',
+  properties: {},
+  geometry: {
+    type: 'Polygon',
+    coordinates: [
+      [
+        [0, 0],
+        [0, 1],
+        [1, 1],
+        [1, 0],
+        [0, 0],
+      ],
+    ],
+  },
+}
+
 map.on('load', () => {
   map.addSource('route', {
     type: 'geojson',
@@ -227,6 +244,20 @@ map.on('load', () => {
     id: 'isochroneFirst',
     type: 'fill',
     source: 'isochroneFirst',
+    layout: {},
+    paint: {
+      'fill-color': '#ff0000',
+      'fill-opacity': 0.33,
+    },
+  })
+  map.addSource('isochroneSecond', {
+    type: 'geojson',
+    data: isochroneSecondFeature,
+  })
+  map.addLayer({
+    id: 'isochroneSecond',
+    type: 'fill',
+    source: 'isochroneSecond',
     layout: {},
     paint: {
       'fill-color': '#ff0000',
@@ -275,13 +306,40 @@ const doIsochrone = async () => {
       cost
     )
     isochroneFirstFeature.geometry.coordinates = [firstCoordinates]
+    map.setPaintProperty(
+      'isochroneFirst',
+      'fill-color',
+      firstColorElement.value
+    )
     const firstSource = map.getSource('isochroneFirst') as GeoJSONSource
     if (firstSource) {
       firstSource.setData(isochroneFirstFeature as GeoJSONFeature)
     }
-    const firstLayer = map.getLayer('isochroneFirst') as FillStyleLayer
-    if (firstLayer) {
-      firstLayer.setPaintProperty('fill-color', firstColorElement.value)
+    const isochroneSecondMin = document.getElementById(
+      'isochroneSecondMin'
+    ) as HTMLInputElement
+    const secondMinDate = new Date(`1970-01-01 ${isochroneSecondMin.value}:00`)
+    const secondMin =
+      (secondMinDate.getTime() - originDate.getTime()) / (60 * 1000)
+    const secondColorElement = document.getElementById(
+      'isochroneSecondColor'
+    ) as HTMLInputElement
+    const secondColor = secondColorElement.value.slice(1)
+    const secondCoordinates = await isochrone.isochrone(
+      isochroneMarker.getLngLat(),
+      secondMin,
+      secondColor,
+      cost
+    )
+    isochroneSecondFeature.geometry.coordinates = [secondCoordinates]
+    map.setPaintProperty(
+      'isochroneSecond',
+      'fill-color',
+      secondColorElement.value
+    )
+    const secondSource = map.getSource('isochroneSecond') as GeoJSONSource
+    if (secondSource) {
+      secondSource.setData(isochroneSecondFeature as GeoJSONFeature)
     }
   }
 }
