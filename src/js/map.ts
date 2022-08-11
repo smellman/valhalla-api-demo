@@ -1,8 +1,15 @@
 import 'maplibre-gl/dist/maplibre-gl.css'
 
-import { GeoJSONFeature, GeoJSONSource, Map, Marker } from 'maplibre-gl'
+import {
+  FillStyleLayer,
+  GeoJSONFeature,
+  GeoJSONSource,
+  Map,
+  Marker,
+} from 'maplibre-gl'
 import { Routing } from './valhalla/routing'
 import { Isochrone } from './valhalla/isochrone'
+import { Costing, CostingArray } from './valhalla/valhalla'
 import * as bootstrap from 'bootstrap'
 
 const host = location.host.split(':')[0]
@@ -89,6 +96,37 @@ const routingDiv = document.getElementById(
 const isochroneDiv = document.getElementById(
   'isochroneApiCanvasBody'
 ) as HTMLDivElement
+
+const routingCosting = document.getElementById(
+  'routingCosting'
+) as HTMLSelectElement
+const isochroneCosting = document.getElementById(
+  'isochroneCosting'
+) as HTMLSelectElement
+
+const setupCosting = (select: HTMLSelectElement, defaultValue: string) => {
+  CostingArray.forEach((v) => {
+    const costItem = document.createElement('option') as HTMLOptionElement
+    costItem.value = v
+    costItem.text = v
+    if (v === defaultValue) {
+      costItem.selected = true
+    }
+    select.appendChild(costItem)
+  })
+}
+
+const initalizeRouting = () => {
+  setupCosting(routingCosting, 'auto')
+}
+
+initalizeRouting()
+
+const initalizeIsochrone = () => {
+  setupCosting(isochroneCosting, 'pedestrian')
+}
+
+initalizeIsochrone()
 
 const setupRoutingMode = () => {
   cleanAll()
@@ -202,7 +240,8 @@ const doRouting = async () => {
     const start = markers[0]
     const end = markers[1]
     const routing = new Routing(`http://${host}:8002`)
-    const line = await routing.routing(start.getLngLat(), end.getLngLat())
+    const cost = routingCosting.value as Costing
+    const line = await routing.routing(start.getLngLat(), end.getLngLat(), cost)
     geojsonFeature.geometry.coordinates = line
   } else {
     geojsonFeature.geometry.coordinates = []
@@ -213,20 +252,36 @@ const doRouting = async () => {
   }
 }
 
+const originDate = new Date('1970-01-01 00:00:00')
+
 const doIsochrone = async () => {
   if (isochroneMarker) {
     const isochrone = new Isochrone(`http://${host}:8002`)
+    const cost = isochroneCosting.value as Costing
+    const isochroneFirstMin = document.getElementById(
+      'isochroneFirstMin'
+    ) as HTMLInputElement
+    const firstMinDate = new Date(`1970-01-01 ${isochroneFirstMin.value}:00`)
+    const firstMin =
+      (firstMinDate.getTime() - originDate.getTime()) / (60 * 1000)
+    const firstColorElement = document.getElementById(
+      'isochroneFirstColor'
+    ) as HTMLInputElement
+    const firstColor = firstColorElement.value.slice(1)
     const firstCoordinates = await isochrone.isochrone(
       isochroneMarker.getLngLat(),
-      15,
-      'ff0000'
+      firstMin,
+      firstColor,
+      cost
     )
-    console.log(firstCoordinates)
     isochroneFirstFeature.geometry.coordinates = [firstCoordinates]
-    console.log(isochroneFirstFeature)
     const firstSource = map.getSource('isochroneFirst') as GeoJSONSource
     if (firstSource) {
       firstSource.setData(isochroneFirstFeature as GeoJSONFeature)
+    }
+    const firstLayer = map.getLayer('isochroneFirst') as FillStyleLayer
+    if (firstLayer) {
+      firstLayer.setPaintProperty('fill-color', firstColorElement.value)
     }
   }
 }
