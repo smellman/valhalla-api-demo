@@ -4,8 +4,10 @@ import {
   FillStyleLayer,
   GeoJSONFeature,
   GeoJSONSource,
+  GeolocateControl,
   Map,
   Marker,
+  NavigationControl,
 } from 'maplibre-gl'
 import { Routing } from './valhalla/routing'
 import { Isochrone } from './valhalla/isochrone'
@@ -217,6 +219,17 @@ let isochroneSecondFeature = {
     ],
   },
 }
+
+map.addControl(new NavigationControl())
+
+map.addControl(
+  new GeolocateControl({
+    positionOptions: {
+      enableHighAccuracy: true,
+    },
+    trackUserLocation: true,
+  })
+)
 
 map.on('load', () => {
   map.addSource('route', {
