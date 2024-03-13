@@ -1,14 +1,13 @@
 import 'maplibre-gl/dist/maplibre-gl.css'
 
 import {
-  FillStyleLayer,
-  GeoJSONFeature,
   GeoJSONSource,
   GeolocateControl,
   Map,
   Marker,
   NavigationControl,
 } from 'maplibre-gl'
+import { LineString, Polygon } from 'geojson'
 import { Routing } from './valhalla/routing'
 import { Isochrone } from './valhalla/isochrone'
 import { Costing, CostingArray } from './valhalla/valhalla'
@@ -68,23 +67,23 @@ const cleanMarkers = () => {
 }
 
 const cleanLine = () => {
-  geojsonFeature.geometry.coordinates = []
+  routeFeature.coordinates = []
   const source = map.getSource('route') as GeoJSONSource
   if (source) {
-    source.setData(geojsonFeature as GeoJSONFeature)
+    source.setData(routeFeature)
   }
 }
 
 const cleanPolygons = () => {
-  isochroneFirstFeature.geometry.coordinates = []
+  isochroneFirstFeature.coordinates = []
   const firstSource = map.getSource('isochroneFirst') as GeoJSONSource
   if (firstSource) {
-    firstSource.setData(isochroneFirstFeature as GeoJSONFeature)
+    firstSource.setData(isochroneFirstFeature)
   }
-  isochroneSecondFeature.geometry.coordinates = []
+  isochroneSecondFeature.coordinates = []
   const secondSource = map.getSource('isochroneSecond') as GeoJSONSource
   if (secondSource) {
-    secondSource.setData(isochroneSecondFeature as GeoJSONFeature)
+    secondSource.setData(isochroneSecondFeature)
   }
 }
 
@@ -184,47 +183,35 @@ map.on('click', (e) => {
   }
 })
 
-let geojsonFeature: GeoJSONFeature = {
-  type: 'Feature',
-  properties: {},
-  geometry: {
-    type: 'LineString',
-    coordinates: [[0, 0]],
-  },
+let routeFeature: LineString = {
+  type: 'LineString',
+  coordinates: [[0, 0]],
 }
 
-let isochroneFirstFeature: GeoJSONFeature = {
-  type: 'Feature',
-  properties: {},
-  geometry: {
-    type: 'Polygon',
-    coordinates: [
-      [
-        [0, 0],
-        [0, 1],
-        [1, 1],
-        [1, 0],
-        [0, 0],
-      ],
+let isochroneFirstFeature: Polygon = {
+  type: 'Polygon',
+  coordinates: [
+    [
+      [0, 0],
+      [0, 1],
+      [1, 1],
+      [1, 0],
+      [0, 0],
     ],
-  },
+  ],
 }
 
-let isochroneSecondFeature: GeoJSONFeature = {
-  type: 'Feature',
-  properties: {},
-  geometry: {
-    type: 'Polygon',
-    coordinates: [
-      [
-        [0, 0],
-        [0, 1],
-        [1, 1],
-        [1, 0],
-        [0, 0],
-      ],
+let isochroneSecondFeature: Polygon = {
+  type: 'Polygon',
+  coordinates: [
+    [
+      [0, 0],
+      [0, 1],
+      [1, 1],
+      [1, 0],
+      [0, 0],
     ],
-  },
+  ],
 }
 
 map.addControl(new NavigationControl({}))
@@ -241,7 +228,7 @@ map.addControl(
 map.on('load', () => {
   map.addSource('route', {
     type: 'geojson',
-    data: geojsonFeature,
+    data: routeFeature,
   })
   map.addLayer({
     id: 'route',
@@ -293,13 +280,13 @@ const doRouting = async () => {
     const routing = new Routing(`http://${host}:8002`)
     const cost = routingCosting.value as Costing
     const line = await routing.routing(start.getLngLat(), end.getLngLat(), cost)
-    geojsonFeature.geometry.coordinates = line
+    routeFeature.coordinates = line
   } else {
-    geojsonFeature.geometry.coordinates = []
+    routeFeature.coordinates = []
   }
   const source = map.getSource('route') as GeoJSONSource
   if (source) {
-    source.setData(geojsonFeature as GeoJSONFeature)
+    source.setData(routeFeature)
   }
 }
 
@@ -325,7 +312,7 @@ const doIsochrone = async () => {
       firstColor,
       cost
     )
-    isochroneFirstFeature.geometry.coordinates = [firstCoordinates]
+    isochroneFirstFeature.coordinates = [firstCoordinates]
     map.setPaintProperty(
       'isochroneFirst',
       'fill-color',
@@ -334,7 +321,7 @@ const doIsochrone = async () => {
     console.log(firstColorElement.value)
     const firstSource = map.getSource('isochroneFirst') as GeoJSONSource
     if (firstSource) {
-      firstSource.setData(isochroneFirstFeature as GeoJSONFeature)
+      firstSource.setData(isochroneFirstFeature)
     }
     const isochroneSecondMin = document.getElementById(
       'isochroneSecondMin'
@@ -352,7 +339,7 @@ const doIsochrone = async () => {
       secondColor,
       cost
     )
-    isochroneSecondFeature.geometry.coordinates = [secondCoordinates]
+    isochroneSecondFeature.coordinates = [secondCoordinates]
     map.setPaintProperty(
       'isochroneSecond',
       'fill-color',
@@ -360,7 +347,7 @@ const doIsochrone = async () => {
     )
     const secondSource = map.getSource('isochroneSecond') as GeoJSONSource
     if (secondSource) {
-      secondSource.setData(isochroneSecondFeature as GeoJSONFeature)
+      secondSource.setData(isochroneSecondFeature)
     }
   }
 }
