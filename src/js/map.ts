@@ -81,6 +81,11 @@ const cleanPolygons = () => {
   if (firstSource) {
     firstSource.setData(isochroneFirstFeature as GeoJSONFeature)
   }
+  isochroneSecondFeature.geometry.coordinates = []
+  const secondSource = map.getSource('isochroneSecond') as GeoJSONSource
+  if (secondSource) {
+    secondSource.setData(isochroneSecondFeature as GeoJSONFeature)
+  }
 }
 
 const cleanAll = () => {
@@ -150,9 +155,11 @@ const setupIsochroneMode = () => {
 
 const map = new Map({
   container: 'map',
-  style: `http://${host}:8000/styles/maptiler-toner-ja/style.json`,
+  //style: `http://${host}:8080/styles/openmaptiles/style.json`,
+  style: `http://${host}:8080/styles/osm-bright/style.json`,
   center: [139.7531, 35.68302],
   zoom: 9,
+  hash: true,
 })
 
 const markers: Marker[] = []
@@ -177,7 +184,7 @@ map.on('click', (e) => {
   }
 })
 
-let geojsonFeature = {
+let geojsonFeature: GeoJSONFeature = {
   type: 'Feature',
   properties: {},
   geometry: {
@@ -186,7 +193,7 @@ let geojsonFeature = {
   },
 }
 
-let isochroneFirstFeature = {
+let isochroneFirstFeature: GeoJSONFeature = {
   type: 'Feature',
   properties: {},
   geometry: {
@@ -203,7 +210,7 @@ let isochroneFirstFeature = {
   },
 }
 
-let isochroneSecondFeature = {
+let isochroneSecondFeature: GeoJSONFeature = {
   type: 'Feature',
   properties: {},
   geometry: {
@@ -220,7 +227,7 @@ let isochroneSecondFeature = {
   },
 }
 
-map.addControl(new NavigationControl())
+map.addControl(new NavigationControl({}))
 
 map.addControl(
   new GeolocateControl({
@@ -324,6 +331,7 @@ const doIsochrone = async () => {
       'fill-color',
       firstColorElement.value
     )
+    console.log(firstColorElement.value)
     const firstSource = map.getSource('isochroneFirst') as GeoJSONSource
     if (firstSource) {
       firstSource.setData(isochroneFirstFeature as GeoJSONFeature)

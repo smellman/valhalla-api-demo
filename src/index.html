@@ -2,7 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Routing Demo</title>
+    <link rel="stylesheet" href="ui/main.scss" />
     <link rel="stylesheet" href="ui/bootstrap.scss" />
     <link rel="stylesheet" href="ui/map.scss" />
   </head>
@@ -14,14 +16,16 @@
           <li class="nav-item">
             <a class="nav-link active" href="#" id="routingApiLink"">Route API</a>
           </li>
+          
           <li class="nav-item">
             <a class="nav-link" href="#" id="isochroneApiLink">Isochrone API</a>
           </li>
+      
         </ul>
       </div>
     </nav>
     <div class="container-fluid" id="main-content">
-      <div class="row"><div id="map"></div></div>
+      <div id="map"></div>
     </div>
     <div class="offcanvas offcanvas-start" tabindex="-1" id="apiCanvas">
       <div class="offcanvas-header">
