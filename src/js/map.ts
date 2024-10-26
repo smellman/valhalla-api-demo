@@ -155,7 +155,7 @@ const setupIsochroneMode = () => {
 const map = new Map({
   container: 'map',
   //style: `http://${host}:8080/styles/openmaptiles/style.json`,
-  style: `http://${host}:8080/styles/osm-bright/style.json`,
+  style: `http://${host}:8000/styles/osm-bright/style.json`,
   center: [139.7531, 35.68302],
   zoom: 9,
   hash: true,
